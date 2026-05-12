@@ -13,7 +13,20 @@ import netCDF4
 import numpy as np
 import xarray as xr
 import yaml
-from earthkit.regrid import interpolate
+
+# Earthkit-regrid's default "user" cache policy registers every regrid-matrix
+# lookup in a shared SQLite DB at ~/.cache/earthkit-regrid/. Each interpolate()
+# call writes a row — and on a shared/networked filesystem (e.g. Lustre) parallel
+# jobs race for the DB lock and fail with `database is locked` (manifesting as
+# a misleading "Could not download matrix file" error). Switch to "temporary":
+# each process gets its own private cache dir + SQLite, so within the process
+# the matrix is fetched once and reused, but no two processes ever touch the
+# same DB file. ("off" doesn't help because that path uses unique filenames
+# per call and re-downloads the matrix every batch.)
+from earthkit.regrid.utils.caching import SETTINGS as _EK_REGRID_SETTINGS
+_EK_REGRID_SETTINGS["cache-policy"] = "temporary"
+
+from earthkit.regrid import interpolate  # noqa: E402  (must follow SETTINGS tweak)
 
 
 _NETCDF_SAFE_TYPES = (str, int, float, bytes, list, tuple, np.ndarray, np.number)

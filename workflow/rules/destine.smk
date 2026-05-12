@@ -71,6 +71,7 @@ rule regrid_destine:
         slurm_partition="small",     # shared CPU partition on LUMI-C
         mem_mb=12000,                # peak ~5-8 GB for high-res → 0.1°; headroom for variability
         runtime=60,                  # minutes; observed ~7 min, leave room
+    retries: 3
     shell:
         """
         OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
