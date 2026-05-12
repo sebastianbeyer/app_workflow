@@ -1,0 +1,20 @@
+regrid:
+  # earthkit-regrid method names, keyed by the {method} wildcard used in
+  # output paths. Add entries here when introducing new methods.
+  methods:
+    nearest: "nearest-neighbour"
+    linear: "linear"
+    gridbox: "grid-box-average"
+  # Output area cutouts, keyed by the {area} wildcard used in output paths.
+  # Value is a "N/W/S/E" string (passed to earthkit-regrid as the `area` of
+  # `out_grid`); use `null` for no cropping.
+  areas:
+    global: null
+    no_poles: "83.95/-180/-56/180"
+
+netcdf:
+  float_dtype: "float32"
+  compression:
+    zlib: true
+    complevel: 4
+    shuffle: true

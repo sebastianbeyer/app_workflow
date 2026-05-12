@@ -1,0 +1,8 @@
+experiments:
+  storylines-hist:
+    forcing:
+      grid: g0.1
+      method: nearest
+      area: no_poles         # cutout tag from config/defaults.yaml `regrid.areas`
+      frequency: hourly
+      variables: ["2t", "avg_tprate"]   # one regridded netCDF per variable per month

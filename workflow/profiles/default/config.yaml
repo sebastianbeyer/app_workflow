@@ -1,0 +1,7 @@
+# Workflow profile auto-discovered by snakemake when run from the project root.
+# Override per invocation with e.g. `--resources polytope_api=3`.
+
+resources:
+  # Polytope service caps concurrent active downloads per user at 5; keep at or
+  # below that so snakemake never queues more requests than the API will accept.
+  - polytope_api=5

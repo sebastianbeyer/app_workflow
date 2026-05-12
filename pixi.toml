@@ -1,0 +1,22 @@
+[workspace]
+authors = ["Sebastian Beyer <sebastian.beyer@awi.de>"]
+channels = ["conda-forge", "bioconda"]
+name = "app_workflow"
+platforms = ["osx-arm64", "linux-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+snakemake = ">=9.9.0,<10"
+earthkit-data = ">=0.19.0,<0.20"
+earthkit-regrid = ">=0.5,<1"
+xarray = ">=2024.0"
+netcdf4 = ">=1.7"
+numpy = ">=2"
+pyyaml = ">=6"
+requests = ">=2.32"
+dask = ">=2024.1.0"
+
+[pypi-dependencies]
+polytope-client = ">=0.7.9, <0.8"

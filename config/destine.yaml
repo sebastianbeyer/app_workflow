@@ -1,0 +1,607 @@
+experiments:
+  storylines-hist:
+    class: "d1"
+    dataset: "climate-dt"
+    type: "fc"
+    expver: "0001"
+    generation: "2"
+    realization: "1"
+    activity: "story-nudging"
+    experiment: "hist"
+    model: "ifs-fesom"
+    address: "polytope.mn5.apps.dte.destination-earth.eu"
+    resolution: "standard"
+    # First month of the climate-DT integration. Used by sequential
+    # downstream rules (e.g. hydroland) as the recursion floor. Not sent
+    # to polytope — see download/destine.py:build_request.
+    startdate: "201701"
+
+  storylines-cont:
+    class: "d1"
+    dataset: "climate-dt"
+    type: "fc"
+    expver: "0001"
+    generation: "2"
+    realization: "1"
+    activity: "story-nudging"
+    experiment: "cont"
+    model: "ifs-fesom"
+    address: "polytope.mn5.apps.dte.destination-earth.eu"
+    resolution: "standard"
+    startdate: "201701"
+
+  storylines-plus2K:
+    class: "d1"
+    dataset: "climate-dt"
+    type: "fc"
+    expver: "0001"
+    generation: "2"
+    realization: "1"
+    activity: "story-nudging"
+    experiment: "Tplus2.0K"
+    model: "ifs-fesom"
+    address: "polytope.mn5.apps.dte.destination-earth.eu"
+    resolution: "standard"
+    startdate: "201701"
+
+  ssp370:
+    class: "d1"
+    dataset: "climate-dt"
+    type: "fc"
+    expver: "0001"
+    generation: "2"
+    realization: "1"
+    activity: "projections"
+    experiment: "SSP3-7.0"
+    model: "ifs-fesom"
+    address: "polytope.lumi.apps.dte.destination-earth.eu"
+    resolution: "standard"
+
+variables:
+  # --- Atmosphere: pressure levels ---
+  pv:
+    name: "Potential vorticity"
+    param: "60"
+    levtype: "pl"
+    frequencies: ["hourly"]
+  z:
+    name: "Geopotential"
+    param: "129"
+    levtype: "pl"
+    frequencies: ["hourly", "6-hourly"]
+  t:
+    name: "Temperature"
+    param: "130"
+    levtype: "pl"
+    frequencies: ["hourly"]
+  u:
+    name: "U component of wind"
+    param: "131"
+    levtype: "hl"
+    frequencies: ["hourly", "6-hourly"]
+  v:
+    name: "V component of wind"
+    param: "132"
+    levtype: "hl"
+    frequencies: ["hourly", "6-hourly"]
+  u_pl:
+    name: "U component of wind (pressure levels)"
+    param: "131"
+    levtype: "pl"
+    frequencies: ["hourly", "6-hourly"]
+  v_pl:
+    name: "V component of wind (pressure levels)"
+    param: "132"
+    levtype: "pl"
+    frequencies: ["hourly", "6-hourly"]
+  q:
+    name: "Specific humidity"
+    param: "133"
+    levtype: "pl"
+    frequencies: ["hourly"]
+  w:
+    name: "Vertical velocity"
+    param: "135"
+    levtype: "pl"
+    frequencies: ["hourly"]
+  r:
+    name: "Relative humidity"
+    param: "157"
+    levtype: "pl"
+    frequencies: ["hourly"]
+  clwc:
+    name: "Specific cloud liquid water content"
+    param: "246"
+    levtype: "pl"
+    frequencies: ["hourly"]
+
+  # --- Atmosphere: pressure levels (jet stream, 200+300 hPa only) ---
+  u_jet:
+    name: "U wind (jet levels 200+300 hPa)"
+    param: "131"
+    levtype: "pl"
+    levelist: "200/300"
+    frequencies: ["daily"]
+  v_jet:
+    name: "V wind (jet levels 200+300 hPa)"
+    param: "132"
+    levtype: "pl"
+    levelist: "200/300"
+    frequencies: ["daily"]
+
+  # --- Atmosphere: pressure levels (850 hPa geopotential for H/L detection) ---
+  z850:
+    name: "Geopotential (850 hPa)"
+    param: "129"
+    levtype: "pl"
+    levelist: "850"
+    frequencies: ["daily"]
+
+  # --- Atmosphere: pressure levels (restricted for IVT) ---
+  q_pl300:
+    name: "Specific humidity (300-1000 hPa)"
+    param: "133"
+    levtype: "pl"
+    levelist: "300/400/500/600/700/850/925/1000"
+    frequencies: ["hourly"]
+  u_pl300:
+    name: "U component of wind (300-1000 hPa)"
+    param: "131"
+    levtype: "pl"
+    levelist: "300/400/500/600/700/850/925/1000"
+    frequencies: ["hourly"]
+  v_pl300:
+    name: "V component of wind (300-1000 hPa)"
+    param: "132"
+    levtype: "pl"
+    levelist: "300/400/500/600/700/850/925/1000"
+    frequencies: ["hourly"]
+
+  # --- Atmosphere: pressure levels (full atmosphere for CAPE) ---
+  t_full:
+    name: "Temperature (full atmosphere)"
+    param: "130"
+    levtype: "pl"
+    levelist: "1/5/10/20/30/50/70/100/150/200/250/300/400/500/600/700/850/925/1000"
+    frequencies: ["hourly"]
+  q_full:
+    name: "Specific humidity (full atmosphere)"
+    param: "133"
+    levtype: "pl"
+    levelist: "1/5/10/20/30/50/70/100/150/200/250/300/400/500/600/700/850/925/1000"
+    frequencies: ["hourly"]
+
+  # --- Atmosphere: pressure levels (full atmosphere for nudging diagnostic) ---
+  u_full:
+    name: "U component of wind (full atmosphere)"
+    param: "131"
+    levtype: "pl"
+    levelist: "1/5/10/20/30/50/70/100/150/200/250/300/400/500/600/700/850/925/1000"
+    frequencies: ["hourly"]
+  v_full:
+    name: "V component of wind (full atmosphere)"
+    param: "132"
+    levtype: "pl"
+    levelist: "1/5/10/20/30/50/70/100/150/200/250/300/400/500/600/700/850/925/1000"
+    frequencies: ["hourly"]
+
+  # --- Atmosphere: pressure levels (full atmosphere for updraft) ---
+  w_full:
+    name: "Vertical velocity (full atmosphere)"
+    param: "135"
+    levtype: "pl"
+    levelist: "1/5/10/20/30/50/70/100/150/200/250/300/400/500/600/700/850/925/1000"
+    frequencies: ["hourly"]
+
+  # --- Atmosphere: surface ---
+  tclw:
+    name: "Total column cloud liquid water"
+    param: "78"
+    levtype: "sfc"
+    frequencies: ["hourly"]
+  tciw:
+    name: "Total column cloud ice water"
+    param: "79"
+    levtype: "sfc"
+    frequencies: ["hourly"]
+  sp:
+    name: "Surface pressure"
+    param: "134"
+    levtype: "sfc"
+    frequencies: ["hourly"]
+  tcw:
+    name: "Total column water"
+    param: "136"
+    levtype: "sfc"
+    frequencies: ["hourly"]
+  tcwv:
+    name: "Total column vertically-integrated water vapour"
+    param: "137"
+    levtype: "sfc"
+    frequencies: ["hourly"]
+  msl:
+    name: "Mean sea level pressure"
+    param: "151"
+    levtype: "sfc"
+    frequencies: ["hourly", "daily"]
+  10u:
+    name: "10 metre U wind component"
+    param: "165"
+    levtype: "sfc"
+    frequencies: ["hourly"]
+  10v:
+    name: "10 metre V wind component"
+    param: "166"
+    levtype: "sfc"
+    frequencies: ["hourly"]
+  2t:
+    name: "2 metre temperature"
+    param: "167"
+    levtype: "sfc"
+    frequencies: ["hourly"]
+  2d:
+    name: "2 metre dewpoint temperature"
+    param: "168"
+    levtype: "sfc"
+    frequencies: ["hourly"]
+  lsm:
+    name: "Land-sea mask"
+    param: "172"
+    levtype: "sfc"
+    frequencies: ["daily"]
+  10si:
+    name: "10 metre wind speed"
+    param: "207"
+    levtype: "sfc"
+    frequencies: ["hourly"]
+  skt:
+    name: "Skin temperature"
+    param: "235"
+    levtype: "sfc"
+    frequencies: ["hourly"]
+  orog:
+    name: "Orography"
+    param: "228002"
+    levtype: "sfc"
+    frequencies: ["daily"]
+  tcc:
+    name: "Total cloud cover"
+    param: "228164"
+    levtype: "sfc"
+    frequencies: ["hourly"]
+
+  # --- Atmosphere: surface averages ---
+  avg_2t:
+    name: "Time-mean 2 metre temperature"
+    param: "228004"
+    levtype: "sfc"
+    frequencies: ["monthly"]
+  avg_10ws:
+    name: "Time-mean 10 metre wind speed"
+    param: "228005"
+    levtype: "sfc"
+    frequencies: ["monthly"]
+  avg_surfror:
+    name: "Time-mean surface runoff rate"
+    param: "235020"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_ssurfror:
+    name: "Time-mean sub-surface runoff rate"
+    param: "235021"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_tsrwe:
+    name: "Time-mean total snowfall rate water equivalent"
+    param: "235031"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_ishf:
+    name: "Time-mean surface sensible heat flux"
+    param: "235033"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_slhtf:
+    name: "Time-mean surface latent heat flux"
+    param: "235034"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_sdswrf:
+    name: "Time-mean surface downward short-wave radiation flux"
+    param: "235035"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_sdlwrf:
+    name: "Time-mean surface downward long-wave radiation flux"
+    param: "235036"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_snswrf:
+    name: "Time-mean surface net short-wave radiation flux"
+    param: "235037"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_snlwrf:
+    name: "Time-mean surface net long-wave radiation flux"
+    param: "235038"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_tnswrf:
+    name: "Time-mean top net short-wave radiation flux"
+    param: "235039"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_tnlwrf:
+    name: "Time-mean top net long-wave radiation flux"
+    param: "235040"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_iews:
+    name: "Time-mean eastward turbulent surface stress"
+    param: "235041"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_inss:
+    name: "Time-mean northward turbulent surface stress"
+    param: "235042"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_ie:
+    name: "Time-mean moisture flux"
+    param: "235043"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_tnswrfcs:
+    name: "Time-mean top net short-wave radiation flux, clear sky"
+    param: "235049"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_tnlwrfcs:
+    name: "Time-mean top net long-wave radiation flux, clear sky"
+    param: "235050"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_snswrfcs:
+    name: "Time-mean surface net short-wave radiation flux, clear sky"
+    param: "235051"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_snlwrfcs:
+    name: "Time-mean surface net long-wave radiation flux, clear sky"
+    param: "235052"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_tdswrf:
+    name: "Time mean top downward short-wave radiation flux"
+    param: "235053"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_tprate:
+    name: "Time-mean total precipitation rate"
+    param: "235055"
+    levtype: "sfc"
+    frequencies: ["hourly", "monthly"]
+  avg_skt:
+    name: "Time-mean skin temperature"
+    param: "235079"
+    levtype: "sfc"
+    frequencies: ["monthly"]
+  avg_tclw:
+    name: "Time-mean total column liquid water"
+    param: "235087"
+    levtype: "sfc"
+    frequencies: ["monthly"]
+  avg_tciw:
+    name: "Time-mean total column cloud ice water"
+    param: "235088"
+    levtype: "sfc"
+    frequencies: ["monthly"]
+  avg_sp:
+    name: "Time-mean surface pressure"
+    param: "235134"
+    levtype: "sfc"
+    frequencies: ["monthly"]
+  avg_tcw:
+    name: "Time-mean total column water"
+    param: "235136"
+    levtype: "sfc"
+    frequencies: ["monthly"]
+  avg_tcwv:
+    name: "Time-mean total column vertically-integrated water vapour"
+    param: "235137"
+    levtype: "sfc"
+    frequencies: ["monthly"]
+  avg_msl:
+    name: "Time-mean mean sea level pressure"
+    param: "235151"
+    levtype: "sfc"
+    frequencies: ["monthly"]
+  avg_10u:
+    name: "Time-mean 10 metre U wind component"
+    param: "235165"
+    levtype: "sfc"
+    frequencies: ["monthly"]
+  avg_10v:
+    name: "Time-mean 10 metre V wind component"
+    param: "235166"
+    levtype: "sfc"
+    frequencies: ["monthly"]
+  avg_2d:
+    name: "Time-mean 2 metre dewpoint temperature"
+    param: "235168"
+    levtype: "sfc"
+    frequencies: ["monthly"]
+  avg_tcc:
+    name: "Time-mean total cloud cover"
+    param: "235288"
+    levtype: "sfc"
+    frequencies: ["monthly"]
+
+  # --- Atmosphere: pressure level averages ---
+  avg_pv:
+    name: "Time-mean potential vorticity"
+    param: "235100"
+    levtype: "pl"
+    frequencies: ["monthly"]
+  avg_z:
+    name: "Time-mean geopotential"
+    param: "235129"
+    levtype: "pl"
+    frequencies: ["monthly"]
+  avg_t:
+    name: "Time-mean temperature"
+    param: "235130"
+    levtype: "pl"
+    frequencies: ["monthly"]
+  avg_u:
+    name: "Time-mean U component of wind"
+    param: "235131"
+    levtype: "pl"
+    frequencies: ["monthly"]
+  avg_v:
+    name: "Time-mean V component of wind"
+    param: "235132"
+    levtype: "pl"
+    frequencies: ["monthly"]
+  avg_q:
+    name: "Time-mean specific humidity"
+    param: "235133"
+    levtype: "pl"
+    frequencies: ["monthly"]
+  avg_w:
+    name: "Time-mean vertical velocity"
+    param: "235135"
+    levtype: "pl"
+    frequencies: ["monthly"]
+  avg_r:
+    name: "Time-mean relative humidity"
+    param: "235157"
+    levtype: "pl"
+    frequencies: ["monthly"]
+  avg_clwc:
+    name: "Time-mean specific cloud liquid water content"
+    param: "235246"
+    levtype: "pl"
+    frequencies: ["monthly"]
+
+  # --- Soil ---
+  sd:
+    name: "Snow depth water equivalent"
+    param: "228141"
+    levtype: "sfc"
+    frequencies: ["hourly"]
+  vsw:
+    name: "Volumetric soil moisture"
+    param: "260199"
+    levtype: "sol"
+    frequencies: ["hourly"]
+  sot:
+    name: "Soil temperature"
+    param: "260360"
+    levtype: "sol"
+    frequencies: ["hourly"]
+  avg_vsw:
+    name: "Time-mean volumetric soil moisture"
+    param: "235077"
+    levtype: "sol"
+    levelist: "1/2/3/4"
+    frequencies: ["monthly"]
+  avg_sd:
+    name: "Time-mean snow depth water equivalent"
+    param: "235078"
+    levtype: "sol"
+    frequencies: ["monthly"]
+  avg_sot:
+    name: "Time-mean soil temperature"
+    param: "235094"
+    levtype: "sol"
+    frequencies: ["monthly"]
+
+  # --- Ocean: 2D ---
+  avg_sithick:
+    name: "Time-mean sea ice thickness"
+    param: "263000"
+    levtype: "o2d"
+    frequencies: ["daily", "monthly"]
+  avg_siconc:
+    name: "Time-mean sea ice area fraction"
+    param: "263001"
+    levtype: "o2d"
+    frequencies: ["daily", "monthly"]
+  avg_siue:
+    name: "Time-mean eastward sea ice velocity"
+    param: "263003"
+    levtype: "o2d"
+    frequencies: ["daily", "monthly"]
+  avg_sivn:
+    name: "Time-mean northward sea ice velocity"
+    param: "263004"
+    levtype: "o2d"
+    frequencies: ["daily", "monthly"]
+  avg_sivol:
+    name: "Time-mean sea ice volume per unit area"
+    param: "263008"
+    levtype: "o2d"
+    frequencies: ["daily", "monthly"]
+  avg_snvol:
+    name: "Time-mean snow volume over sea ice per unit area"
+    param: "263009"
+    levtype: "o2d"
+    frequencies: ["daily", "monthly"]
+  avg_sos:
+    name: "Time-mean sea surface practical salinity"
+    param: "263100"
+    levtype: "o2d"
+    frequencies: ["daily", "monthly"]
+  avg_tos:
+    name: "Time-mean sea surface temperature"
+    param: "263101"
+    levtype: "o2d"
+    frequencies: ["daily", "monthly"]
+  avg_hc300m:
+    name: "Time-mean vertically-integrated heat content in the upper 300 m"
+    param: "263121"
+    levtype: "o2d"
+    frequencies: ["daily", "monthly"]
+  avg_hc700m:
+    name: "Time-mean vertically-integrated heat content in the upper 700 m"
+    param: "263122"
+    levtype: "o2d"
+    frequencies: ["daily", "monthly"]
+  avg_hcbtm:
+    name: "Time-mean total column heat content"
+    param: "263123"
+    levtype: "o2d"
+    frequencies: ["daily", "monthly"]
+  avg_zos:
+    name: "Time-mean sea surface height"
+    param: "263124"
+    levtype: "o2d"
+    frequencies: ["daily", "monthly"]
+
+  # --- Ocean: 3D ---
+  avg_so:
+    name: "Time-mean sea water practical salinity"
+    param: "263500"
+    levtype: "o3d"
+    frequencies: ["daily", "monthly"]
+  avg_thetao:
+    name: "Time-mean sea water potential temperature"
+    param: "263501"
+    levtype: "o3d"
+    frequencies: ["daily", "monthly"]
+  avg_von:
+    name: "Time-mean northward sea water velocity"
+    param: "263505"
+    levtype: "o3d"
+    frequencies: ["daily", "monthly"]
+  avg_uoe:
+    name: "Time-mean eastward sea water velocity"
+    param: "263506"
+    levtype: "o3d"
+    frequencies: ["daily", "monthly"]
+  avg_wo:
+    name: "Time-mean upward sea water velocity"
+    param: "263507"
+    levtype: "o3d"
+    frequencies: ["daily", "monthly"]

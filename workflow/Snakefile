@@ -1,0 +1,82 @@
+import re
+
+import yaml
+
+DESTINE_CONFIG = "config/destine.yaml"
+DEFAULTS_CONFIG = "config/defaults.yaml"
+HYDROLAND_CONFIG = "config/hydroland.yaml"
+
+
+def _load_yaml(path):
+    with open(path) as f:
+        return yaml.safe_load(f)
+
+
+_destine = _load_yaml(DESTINE_CONFIG)
+_defaults = _load_yaml(DEFAULTS_CONFIG)
+_hydroland = _load_yaml(HYDROLAND_CONFIG)
+
+VALID_EXPERIMENTS = sorted(_destine.get("experiments", {}).keys())
+VALID_VARIABLES = sorted(_destine.get("variables", {}).keys())
+VALID_METHODS = sorted(_defaults.get("regrid", {}).get("methods", {}).keys())
+VALID_AREAS = sorted(_defaults.get("regrid", {}).get("areas", {}).keys())
+HYDROLAND_EXPERIMENTS = _hydroland.get("experiments", {})
+
+SKIP_TLS = bool(config.get("skip_tls", False))
+REGRID_BATCH_SIZE = int(config.get("regrid_batch_size", 24))
+
+
+def months_between(start_yyyymm: str, end_yyyymm: str):
+    """Inclusive list of YYYYMM strings between two YYYYMM bounds."""
+    y0, m0 = int(start_yyyymm[:4]), int(start_yyyymm[4:])
+    y1, m1 = int(end_yyyymm[:4]), int(end_yyyymm[4:])
+    out = []
+    y, m = y0, m0
+    while (y, m) <= (y1, m1):
+        out.append(f"{y:04d}{m:02d}")
+        m += 1
+        if m > 12:
+            y += 1
+            m = 1
+    return out
+
+
+wildcard_constraints:
+    experiment="|".join(re.escape(e) for e in VALID_EXPERIMENTS),
+    variable="|".join(re.escape(v) for v in VALID_VARIABLES),
+    method="|".join(re.escape(m) for m in VALID_METHODS),
+    area="|".join(re.escape(a) for a in VALID_AREAS),
+    frequency=r"hourly|daily|monthly",
+    grid=r"g\d+(\.\d+)?",
+    source_resolution=r"standard|high",
+    yyyymm=r"\d{6}",
+
+
+include: "rules/destine.smk"
+include: "rules/hydroland.smk"
+
+
+# --- Targets ----------------------------------------------------------------
+# Declare the datasets you want here. Each entry expands to one file path.
+# Use `regridded_path(...)` for regridded netCDFs (from rules/destine.smk).
+# Or list hydroland sentinels like
+#   f"results/hydroland/storylines-hist/{yyyymm}.done"
+# to trigger the full sequential chain back to the experiment's startdate.
+
+TARGETS = []
+
+for yyyymm in months_between("202307", "202307"):
+    TARGETS.append(regridded_path(
+        experiment="storylines-hist",
+        grid="g0.25",
+        method="nearest",
+        area="global",
+        variable="2t",
+        frequency="hourly",
+        yyyymm=yyyymm,
+    ))
+
+
+rule all:
+    input:
+        TARGETS,
