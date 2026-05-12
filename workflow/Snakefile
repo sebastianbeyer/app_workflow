@@ -52,6 +52,12 @@ wildcard_constraints:
     yyyymm=r"\d{6}",
 
 
+# Run on the snakemake host (login node) rather than being submitted to the
+# cluster executor. Downloads need outbound HTTPS; the fake hydroland steps
+# are cheap placeholders. Only `regrid_destine` is submitted as SLURM jobs.
+localrules: download_destine, hydroland_init, hydroland_step
+
+
 include: "rules/destine.smk"
 include: "rules/hydroland.smk"
 

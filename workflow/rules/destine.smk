@@ -66,8 +66,14 @@ rule regrid_destine:
         defaults_config=DEFAULTS_CONFIG,
         grid_deg=lambda wc: wc.grid.removeprefix("g"),
         batch_size=REGRID_BATCH_SIZE,
+    threads: 1
+    resources:
+        slurm_partition="small",     # shared CPU partition on LUMI-C
+        mem_mb=12000,                # peak ~5-8 GB for high-res → 0.1°; headroom for variability
+        runtime=60,                  # minutes; observed ~7 min, leave room
     shell:
         """
+        OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
         pixi run python workflow/scripts/regrid/healpix_to_latlon.py \
             --input {input} \
             --output {output} \

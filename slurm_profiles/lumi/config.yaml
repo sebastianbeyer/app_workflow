@@ -1,0 +1,4 @@
+executor: slurm
+default-resources:
+  slurm_account: project_465002727
+  slurm_partition: "standard"
