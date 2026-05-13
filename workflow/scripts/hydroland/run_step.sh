@@ -1,20 +1,22 @@
 #!/usr/bin/env bash
 # Placeholder hydroland one-month step. Will be replaced by the real model.
 #
-# Args: <experiment> <yyyymm> <prev_state> <out_state> [forcing_files...]
+# Args: <experiment> <member> <yyyymm> <prev_state> <out_state> [forcing_files...]
 set -euo pipefail
 
 experiment="$1"
-yyyymm="$2"
-prev="$3"
-out="$4"
-shift 4
+member="$2"
+yyyymm="$3"
+prev="$4"
+out="$5"
+shift 5
 forcing=("$@")
 
 mkdir -p "$(dirname "$out")"
 {
     echo "hydroland: monthly step"
     echo "experiment: ${experiment}"
+    echo "member:     ${member}"
     echo "month:      ${yyyymm}"
     echo "prev_state: ${prev}"
     echo "forcing:"

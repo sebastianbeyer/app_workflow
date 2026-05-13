@@ -1,8 +1,29 @@
 experiments:
   storylines-hist:
+    # Integration start month comes from `startdate` on the matching experiment
+    # block in config/destine.yaml.
+    members: [1]             # ensemble members to integrate (each runs independently)
     forcing:
       grid: g0.1
       method: nearest
       area: no_poles         # cutout tag from config/defaults.yaml `regrid.areas`
       frequency: hourly
       variables: ["2t", "avg_tprate"]   # one regridded netCDF per variable per month
+
+  storylines-cont:
+    members: [1]
+    forcing:
+      grid: g0.1
+      method: nearest
+      area: no_poles
+      frequency: hourly
+      variables: ["2t", "avg_tprate"]
+
+  storylines-plus2K:
+    members: [1]
+    forcing:
+      grid: g0.1
+      method: nearest
+      area: no_poles
+      frequency: hourly
+      variables: ["2t", "avg_tprate"]

@@ -34,6 +34,8 @@ def parse_args():
     p.add_argument("--month", type=int, required=True, choices=range(1, 13))
     p.add_argument("--source-resolution", required=True, choices=["standard", "high"],
                    help="HEALPix source resolution; overrides 'resolution' from destine.yaml")
+    p.add_argument("--realization", required=True,
+                   help="Ensemble member (polytope `realization`); overrides destine.yaml")
     p.add_argument("--output", required=True, help="Path to output .grib file")
     p.add_argument("--skip-tls", action="store_true",
                    help="Skip TLS certificate verification (use when server cert is expired)")
@@ -136,6 +138,7 @@ def main():
 
     experiment_cfg = dict(experiments[args.experiment])
     experiment_cfg["resolution"] = args.source_resolution
+    experiment_cfg["realization"] = args.realization
     variable_cfg = variables[args.variable]
 
     allowed = variable_cfg.get("frequencies", [])

@@ -38,8 +38,8 @@ def hydroland_prev_state(wc):
             f"'{wc.experiment}' startdate {start} (from {DESTINE_CONFIG})."
         )
     if wc.yyyymm == start:
-        return f"results/hydroland/{wc.experiment}/init.done"
-    return f"results/hydroland/{wc.experiment}/{prev_yyyymm(wc.yyyymm)}.done"
+        return f"results/hydroland/{wc.experiment}/E{wc.member}/init.done"
+    return f"results/hydroland/{wc.experiment}/E{wc.member}/{prev_yyyymm(wc.yyyymm)}.done"
 
 
 def hydroland_forcing(wc):
@@ -48,7 +48,7 @@ def hydroland_forcing(wc):
     f = cfg["forcing"]
     return [
         regridded_path(
-            wc.experiment, f["grid"], f["method"], f["area"],
+            wc.experiment, wc.member, f["grid"], f["method"], f["area"],
             var, f["frequency"], wc.yyyymm,
         )
         for var in f["variables"]
@@ -57,9 +57,10 @@ def hydroland_forcing(wc):
 
 rule hydroland_init:
     output:
-        "results/hydroland/{experiment}/init.done"
+        "results/hydroland/{experiment}/E{member}/init.done"
     shell:
-        "bash workflow/scripts/hydroland/init.sh {wildcards.experiment} {output}"
+        "bash workflow/scripts/hydroland/init.sh "
+        "{wildcards.experiment} {wildcards.member} {output}"
 
 
 rule hydroland_step:
@@ -67,7 +68,8 @@ rule hydroland_step:
         prev=hydroland_prev_state,
         forcing=hydroland_forcing,
     output:
-        "results/hydroland/{experiment}/{yyyymm}.done"
+        "results/hydroland/{experiment}/E{member}/{yyyymm}.done"
     shell:
         "bash workflow/scripts/hydroland/run_step.sh "
-        "{wildcards.experiment} {wildcards.yyyymm} {input.prev} {output} {input.forcing}"
+        "{wildcards.experiment} {wildcards.member} {wildcards.yyyymm} "
+        "{input.prev} {output} {input.forcing}"

@@ -49,6 +49,7 @@ wildcard_constraints:
     frequency=r"hourly|daily|monthly",
     grid=r"g\d+(\.\d+)?",
     source_resolution=r"standard|high",
+    member=r"\d+",
     yyyymm=r"\d{6}",
 
 
@@ -74,6 +75,7 @@ TARGETS = []
 for yyyymm in months_between("202307", "202307"):
     TARGETS.append(regridded_path(
         experiment="storylines-hist",
+        member=1,
         grid="g0.25",
         method="nearest",
         area="global",

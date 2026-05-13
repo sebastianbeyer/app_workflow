@@ -14,23 +14,23 @@ def source_resolution_for(grid: str) -> str:
     return "high" if deg < 0.5 else "standard"
 
 
-def native_path(experiment, source_resolution, variable, frequency, yyyymm):
+def native_path(experiment, member, source_resolution, variable, frequency, yyyymm):
     return (
-        f"resources/data/destine/{experiment}/native/{source_resolution}/"
+        f"resources/data/destine/{experiment}/E{member}/native/{source_resolution}/"
         f"{variable}/{frequency}/{yyyymm}.grib"
     )
 
 
-def regridded_path(experiment, grid, method, area, variable, frequency, yyyymm):
+def regridded_path(experiment, member, grid, method, area, variable, frequency, yyyymm):
     return (
-        f"resources/data/destine/{experiment}/{grid}/{method}/{area}/"
+        f"resources/data/destine/{experiment}/E{member}/{grid}/{method}/{area}/"
         f"{variable}/{frequency}/{yyyymm}.nc"
     )
 
 
 rule download_destine:
     output:
-        temp("resources/data/destine/{experiment}/native/{source_resolution}/{variable}/{frequency}/{yyyymm}.grib")
+        temp("resources/data/destine/{experiment}/E{member}/native/{source_resolution}/{variable}/{frequency}/{yyyymm}.grib")
     params:
         destine_config=DESTINE_CONFIG,
         year=lambda wc: wc.yyyymm[:4],
@@ -49,6 +49,7 @@ rule download_destine:
             --year {params.year} \
             --month {params.month} \
             --source-resolution {wildcards.source_resolution} \
+            --realization {wildcards.member} \
             --output {output} \
             {params.skip_tls_flag}
         """
@@ -57,11 +58,11 @@ rule download_destine:
 rule regrid_destine:
     input:
         lambda wc: native_path(
-            wc.experiment, source_resolution_for(wc.grid),
+            wc.experiment, wc.member, source_resolution_for(wc.grid),
             wc.variable, wc.frequency, wc.yyyymm,
         )
     output:
-        "resources/data/destine/{experiment}/{grid}/{method}/{area}/{variable}/{frequency}/{yyyymm}.nc"
+        "resources/data/destine/{experiment}/E{member}/{grid}/{method}/{area}/{variable}/{frequency}/{yyyymm}.nc"
     params:
         defaults_config=DEFAULTS_CONFIG,
         grid_deg=lambda wc: wc.grid.removeprefix("g"),

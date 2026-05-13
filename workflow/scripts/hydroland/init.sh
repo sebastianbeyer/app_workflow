@@ -3,11 +3,13 @@
 set -euo pipefail
 
 experiment="$1"
-out="$2"
+member="$2"
+out="$3"
 
 mkdir -p "$(dirname "$out")"
 {
     echo "hydroland: initial state"
     echo "experiment: ${experiment}"
+    echo "member:     ${member}"
     echo "created:    $(date -u +%FT%TZ)"
 } > "$out"
